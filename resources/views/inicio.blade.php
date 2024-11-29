@@ -155,8 +155,8 @@
 
 
     </div>
-    <footer class="text-center py-3" >
-        <p class="mb-0">© Todos los derechos reservados Minimarket Tip Top S.A.C. Av. Leoncio Prado N°14, Pacasmayo, Perú</p>
+    <footer class="main-footer" style="display: flex; justify-content: center; align-items: center; text-align: center;">
+        <strong>© Todos los derechos reservados Minimarket Tip Top S.A.C. Av. Leoncio Prado N°14, Pacasmayo, Perú.</strong>
     </footer>
     <!-- Scripts de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
