@@ -1,0 +1,9 @@
+{
+	"1": ["Página principal", "index.htm", []],
+	"2": ["1. Ayuda en línea de ventas", "1__ayuda_en_linea_de_ventas.htm", []],
+	"3": ["1.1. Datos del cliente", "1_1__datos_del_cliente.htm", [1]],
+	"4": ["1.2. Datos del producto", "1_2__datos_del_producto.htm", [1]],
+	"5": ["1.3. Productos de carrito", "1_3__productos_de_carrito.htm", [1]],
+	"6": ["1.4. Comprobante", "1_4__comprobante.htm", [1]],
+	"7": ["1.5. Listado de ventas", "1_5__listado_de_ventas.htm", [1]]
+}

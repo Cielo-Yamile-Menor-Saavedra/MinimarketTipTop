@@ -1,0 +1,15 @@
+[
+	{ "s": "CAMPO", "p": [5, 4] },
+	{ "s": "CAMPOS", "p": [3] },
+	{ "s": "CANCELA", "p": [5] },
+	{ "s": "CANCELAR", "p": [3, 5, 4] },
+	{ "s": "CANTIDAD", "p": [4, 5] },
+	{ "s": "CARRITO", "p": [5, 4] },
+	{ "s": "CLIENTE", "p": [3, 5, 4] },
+	{ "s": "CLIENTES", "p": [3] },
+	{ "s": "COMPROBANTE", "p": [6, 7] },
+	{ "s": "CON", "p": [5] },
+	{ "s": "CORRECTO", "p": [2] },
+	{ "s": "CUAL", "p": [5] },
+	{ "s": "CÓDIGO", "p": [7, 4] }
+]

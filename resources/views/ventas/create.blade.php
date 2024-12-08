@@ -350,7 +350,7 @@
 
 @section('script')
 
-<script>
+{{-- <script>
     function capturarTecla(event) {
         // Verificar si se presionó la tecla F1
         if (event.key === "F1") {
@@ -374,7 +374,17 @@
     // Escuchar eventos de teclado en toda la página
     document.addEventListener("keydown", capturarTecla);
 </script>
+ --}}
 
+ <script>
+    function capturarTecla(event) {
+        if (event.key === "F1") {
+            event.preventDefault(); // Prevenir la acción predeterminada del navegador
+            window.open('/ayuda_mod_ventas/index.htm', '_blank'); // Abrir en una nueva pestaña o ventana
+        }
+    }
+    document.addEventListener("keydown", capturarTecla);
+</script>
 
 
 

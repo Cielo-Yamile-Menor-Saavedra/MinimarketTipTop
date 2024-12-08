@@ -135,7 +135,7 @@ Route::get('/api/ventas', [VentaController::class, 'obtenerDatosVentas']);
 
 //Ayuda del módulo de ventas
 
-Route::get('/abrir-ayuda', function () {
+/* Route::get('/abrir-ayuda', function () {
     $ruta = public_path('ayuda/Ayuda_ventas.chm');  // Ruta completa al archivo de ayuda
 
     if (file_exists($ruta)) {
@@ -145,10 +145,12 @@ Route::get('/abrir-ayuda', function () {
     }
 
     return response()->json(['success' => false, 'message' => 'Archivo no encontrado'], 404);
-})->name('abrirAyuda');
+})->name('abrirAyuda'); */
 
 
-
+Route::get('/ayuda_mod_ventas', function () {
+    return redirect(asset('ayuda_mod_ventas/index.htm'));
+});
 
 
 

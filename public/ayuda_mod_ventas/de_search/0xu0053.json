@@ -1,0 +1,11 @@
+[
+	{ "s": "SE", "p": [4] },
+	{ "s": "SECCIÓN", "p": [7, 6, 5, 4, 3, 2] },
+	{ "s": "SEECCIONE", "p": [3] },
+	{ "s": "SELECCIONADOS", "p": [5] },
+	{ "s": "SELECCIONAR", "p": [3, 4] },
+	{ "s": "SELECCIONE", "p": [3, 4, 7, 6, 5] },
+	{ "s": "SI", "p": [5] },
+	{ "s": "SOLICITE", "p": [4] },
+	{ "s": "SU", "p": [3] }
+]
