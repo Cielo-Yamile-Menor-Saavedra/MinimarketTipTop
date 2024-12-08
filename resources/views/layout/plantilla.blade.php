@@ -377,7 +377,7 @@
 </li>
 
 <li class="nav-item">
-    <a href="{{route('prediccion.index')}}" class="nav-link">
+    <a href="https://prediccion-ventas.streamlit.app" target="_blank" class="nav-link">
         <i class="fa-solid fa-chart-simple"></i>
         <p>
             Predicción de ventas
