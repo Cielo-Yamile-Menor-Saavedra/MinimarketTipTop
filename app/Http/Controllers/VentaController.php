@@ -212,7 +212,8 @@ class VentaController extends Controller
             'numero' => $request->proximoNumeroBoleta, // Próximo número de boleta calculado
             'venta_id' => $venta->id,
             'monto'  => $request->total,
-            'pago'  => $request->pago
+            'pago'  => $request->pago,
+            'estadoboleta' => 1
         ]);
 
         // Guardar los detalles de la venta
@@ -390,6 +391,48 @@ class VentaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $venta = Venta::find($id);
+        $venta->estadoventa = 0;
+
+        $detalles = DetalleVenta::where('id_venta','=',$id)->get();
+        $boleta = Boleta::where('venta_id','=',$id)->first();
+
+        if ($boleta) {
+            $boleta->estadoboleta = 0;
+            $boleta->save();
+        }
+
+        
+        // Guardar los detalles de la venta
+        foreach ($detalles as $detalle) {
+
+            // Buscar el producto por el código y obtener su ID
+            $producto = Producto::find($detalle->id_producto);
+
+            // Verificar si el producto existe
+            if ($producto) {
+
+                
+                date_default_timezone_set('America/Lima');
+                    $fecha_actual = date("Y-m-d H:i:s");
+                $detalle->updated_at = $fecha_actual;
+
+                $detalle->save();
+
+                Producto::AumentarStockProducto($producto->id,$detalle->cantidad);
+
+            } else {
+                // Manejar el caso donde el producto no exista
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Producto con código ' . $detalle->codigo . ' no encontrado'
+                ], 404);
+            }
+        }
+
+
+        $venta->save();
+
+        return response()->json(['success' => 'Venta Eliminada Exitosamente.']);
     }
 }

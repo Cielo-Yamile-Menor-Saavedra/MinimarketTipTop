@@ -22,4 +22,6 @@ class DetalleVenta extends Model
     {
         return $this->hasOne(Producto::class,'id','id_producto');
     }
+
+    
 }

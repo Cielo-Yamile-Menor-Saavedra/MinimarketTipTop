@@ -46,10 +46,8 @@ class Producto extends Model
         // Asegúrate de utilizar DB::update() y no DB::select()
         return DB::update("UPDATE productos SET stock = stock - ? WHERE id = ?", [$cantidad, $idproducto]);
     }
-    public static function AumentarStocklibro($LibroID,$Nrocopiaslibro){
-        return DB::select(
-        DB::raw("UPDATE libro set Stocklibro = Stocklibro + '".$Nrocopiaslibro."' where LibroID='".$LibroID."'")
-        );
+    public static function AumentarStockProducto($idproducto,$cantidad){
+        return DB::update("UPDATE productos set stock = stock + ? WHERE id = ?", [$cantidad, $idproducto]);
     }
 
     public function compras()

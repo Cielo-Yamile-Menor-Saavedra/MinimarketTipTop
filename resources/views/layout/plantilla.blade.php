@@ -230,7 +230,7 @@
 
     <ul class="nav nav-treeview">
 
-        <li class="nav-item">
+        <li class="nav-item {{ request()->is('producto*')  ? 'menu-open' : '' }}">
             <a href="{{ route('producto.create') }}" class="nav-link ">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Creación de productos</p>
@@ -241,7 +241,7 @@
 </li>
 
 <li class="nav-item">
-    <a href="#" class="nav-link">
+    <a href="#" class="nav-link {{ request()->is('*')  ? 'menu-open' : '' }}">
         <i class="fa-solid fa-clipboard-list"></i>
         <p>
             Orden de compra
@@ -267,8 +267,8 @@
 </li>
 
 
-<li class="nav-item">
-    <a href="#" class="nav-link">
+<li class="nav-item {{ request()->is('compra*')  ? 'menu-open' : '' }}">
+    <a href="#" class="nav-link {{ request()->is('compra*') ? 'active' : '' }}">
         <i class="fa-solid fa-cart-shopping"></i>
         <p>
             Compras
@@ -277,7 +277,7 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{{ route('compra.index') }}" class="nav-link ">
+            <a href="{{ route('compra.index') }}" class="nav-link {{ request()->is('compras') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Listado de compras</p>
             </a>
@@ -285,15 +285,15 @@
     </ul>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{{ route('compra.create') }}" class="nav-link ">
+            <a href="{{ route('compra.create') }}" class="nav-link {{ request()->is('compras/create') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Creación de compras</p>
             </a>
         </li>
     </ul>
 </li>
-<li class="nav-item">
-    <a href="#" class="nav-link">
+<li class="nav-item {{ request()->is('venta*')  ? 'menu-open' : '' }}">
+    <a href="#" class="nav-link {{ request()->is('venta*') ? 'active' : '' }}" >
         <i class="fa-solid fa-store"></i>
         <p>
             Ventas
@@ -302,7 +302,7 @@
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{{ route('venta.create') }}" class="nav-link ">
+            <a href="{{ route('venta.create') }}" class="nav-link {{ request()->is('venta/create') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Realizar venta</p>
             </a>
@@ -310,7 +310,7 @@
     </ul>
     <ul class="nav nav-treeview">
         <li class="nav-item">
-            <a href="{{ route('venta.index') }}" class="nav-link ">
+            <a href="{{ route('venta.index') }}" class="nav-link {{ request()->is('venta') ? 'active' : '' }}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Listado de ventas</p>
             </a>
@@ -339,8 +339,8 @@
     </ul>
 
 
-<li class="nav-item">
-  <a href="{{route('proveedor.index')}}" class="nav-link">
+<li class="nav-item {{ request()->is('proveedor*')  ? 'menu-open' : '' }}">
+  <a href="{{route('proveedor.index')}}" class="nav-link {{ request()->is('proveedor*') ? 'active' : '' }}">
     <i class="fas fa-user-tie"></i>
       <p>
           Proveedores
@@ -349,7 +349,7 @@
 </li>
 
 <li class="nav-item {{ request()->is('reporte*') || request()->is('gestion*') ? 'menu-open' : '' }}" >
-  <a href="{{--route('prestamo.index')--}}" class="nav-link {{ request()->is('reporte*') || request()->is('gestion*') || request()->is('roles*') ? 'active' : '' }}" >
+  <a href="{{--route('prestamo.index')--}}" class="nav-link {{ request()->is('reporte*') ? 'active' : '' }}" >
     <i class="fas fa-shield-alt"></i>
     <p>
       Reportes
@@ -359,7 +359,7 @@
   <ul class="nav nav-treeview">
     @can('permiso.index')
     <li class="nav-item">
-      <a href="{{route('reporte.create')}}" class="nav-link {{ request()->is('reporte*') ? 'active' : '' }}">
+      <a href="{{route('reporte.create')}}" class="nav-link {{ request()->is('reporte/create') ? 'active' : '' }}">
         <i class="far fa-circle nav-icon"></i>
         <p>Panel</p>
       </a>
@@ -367,9 +367,9 @@
     </li>
     @can('role.index')
     <li class="nav-item">
-      <a href="{{route('reporte.index')}}" class="nav-link {{ request()->is('gestion*') ? 'active' : '' }}">
+      <a href="{{route('reporte.index')}}" class="nav-link {{ request()->is('reporte') ? 'active' : '' }}">
         <i class="far fa-circle nav-icon"></i>
-        <p>De gestión</p>
+        <p>Gráficos</p>
       </a>
     @endcan
     </li>

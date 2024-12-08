@@ -18,7 +18,10 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">LISTA DE VENTAS</h5>
-              <p class="card-text"></p>
+              <p class="card-text">
+                <a href="{{route('venta.create')}}" style="float: right" class="btn btn-primary">Nueva Venta </a> <br>
+              </p>
+                
               <style>
                 .table-containerr {
                     overflow-x: auto;
@@ -390,6 +393,37 @@
         //         }
         //     }, 0);  // 0 milisegundos de retraso, solo para separar el proceso
         // });
+
+        $('body').on('click', '.deleteVenta', function() {
+
+            var Venta_id_delete = $(this).data("id");
+            $confirm = confirm("¿Estás seguro de que quieres eliminarlo?");
+            if ($confirm == true) {
+                $.ajax({
+                    type: "DELETE",
+                    
+                    url: '{{ route('venta.destroy', ['ventum' => ':ventum']) }}'.replace(':ventum', Venta_id_delete),
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        table.draw();
+                        Toast.fire({
+                            type: 'success',
+                            title: String(data.success)
+                        });
+
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                        Toast.fire({
+                            type: 'error',
+                            title: 'Venta fallo al Eliminarlo.'
+                        })
+                    }
+                });
+            }
+        });
 
     });
 </script>
