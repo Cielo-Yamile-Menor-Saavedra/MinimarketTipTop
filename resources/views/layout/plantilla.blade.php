@@ -65,12 +65,23 @@
     <ul class="navbar-nav ml-auto">
 
       <li>
-        <form action="{{route('logout')}}" method="post" class="col-2">
-          @csrf<!-- crea un token de seguridad-->
-          <button class="btn btn-light" type="submit">
-            <i class="fa fa-power-off"></i> Salir</button>
-
-        </form>
+        <div class="row">
+          <div class="col">
+            <a href="{{ url('/apk/app-release.apk') }}" class="btn btn-primary">
+              📥App
+            </a>
+          </div>
+          <div class="col">
+            <form action="{{route('logout')}}" method="post" class="col-2">
+              @csrf<!-- crea un token de seguridad-->
+              <button class="btn btn-warning" type="submit">
+                <i class="fa fa-power-off"></i> Salir</button>
+    
+            </form>
+          </div>
+        </div>
+        
+        
 
       </li>
     </ul>
