@@ -8,8 +8,6 @@ class PrediccionController extends Controller
 {
     public function index()
     {
-
-
         return view('prediccion.index');
     }
 
