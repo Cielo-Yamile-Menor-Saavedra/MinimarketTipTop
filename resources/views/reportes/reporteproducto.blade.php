@@ -58,7 +58,15 @@
                 </div>
             </div>
         </form>
-            
+       <div class="row">
+        <div class="col-md-2">
+            <form id="exportPdfForm" action="{{ route('exportarDinamico.pdf') }}" method="POST">
+                @csrf
+                <input type="hidden" name="chart" id="chartInput">
+                <button type="submit" class="btn btn-danger">Exportar PDF</button>
+            </form>
+        </div>
+       </div>
 
     </div>
     
@@ -921,6 +929,24 @@
         });
 
         actualizarAgrupacion();
+
+        // Script para exportar el gráfico a PDF
+        document.getElementById('exportPdfForm').addEventListener('submit', function (event) {
+            // Previene el envío del formulario hasta obtener el gráfico
+            event.preventDefault();
+
+            // Selecciona el elemento del gráfico
+            var chartCanvas = document.getElementById('graficoVentas');
+
+            // Convierte el gráfico a una imagen Base64
+            var chartBase64 = chartCanvas.toDataURL('image/png');
+
+            // Establece el valor del campo oculto
+            document.getElementById('chartInput').value = chartBase64;
+
+            // Envía el formulario
+            this.submit();
+        });
 
     });
 

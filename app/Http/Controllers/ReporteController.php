@@ -337,7 +337,144 @@ class ReporteController extends Controller
         // Descarga el PDF generado
         return $pdf->download('reporte-stock.pdf');
     }
+    
 
+    public function exportarDinamicoPDF(Request $request)
+    {
+        $productos=Producto::all();
+        // if (empty($request->producto_id)) {
+        //     # code...
+        // } else {
+        //     # code...
+        // }
+        
+        $idproducto = $request->producto_id;
+        $agrupacion = $request->input('agrupacion', 'mes');
+        $tipo_grafico = $request->input('tipo_grafico', 'bar');
+        $fechaActual = Carbon::now();
+
+        // Inicializar fechas predeterminadas (un mes antes y hoy) si no se reciben en el request
+        $fecha_inicio = $request->fecha_inicio 
+            ? Carbon::createFromFormat('Y-m-d', $request->fecha_inicio)->startOfDay() 
+            : $fechaActual->copy()->subMonth()->startOfDay();
+
+        $fecha_fin = $request->fecha_fin 
+            ? Carbon::createFromFormat('Y-m-d', $request->fecha_fin)->endOfDay() 
+            : $fechaActual->copy()->endOfDay();
+        // Obtén los datos de la tabla
+        $data = DB::table('venta_detalle as vd')
+                        ->join('ventas as v', 'vd.id_venta', '=', 'v.id')
+                        ->where('v.estadoventa', '=', 1)
+                        //->where('vd.id_producto','=',$idproducto)
+                        ->when(!empty($idproducto), function ($query) use ($idproducto) {
+                            return $query->where('vd.id_producto', '=', $idproducto);
+                        })
+                        ->join('productos as p', 'vd.id_producto', '=', 'p.id')
+                        ->join('clientes as c', 'v.id_cliente', '=', 'c.id')
+                        ->leftJoin('boletas as b', 'v.id', '=', 'b.venta_id')
+                        ->whereBetween('vd.created_at', [$fecha_inicio, $fecha_fin])
+                        ->select(
+                            'vd.id as id',
+                            DB::raw("IFNULL(DATE_FORMAT(vd.created_at, '%d-%m-%Y'), 'Sin fecha') as fecha"),
+                            DB::raw("IFNULL(CONCAT(b.serie, '-', b.numero), 'NO GENERADO') as boleta"),
+                            'c.nombre_cliente as cliente',
+                            'c.dni_ruc as ruc_dni',
+                            'p.nombre_producto as producto',
+                            'p.codigo as codigoproducto',
+                            'vd.cantidad as cantidad',
+                            DB::raw("ROUND(vd.cantidad * vd.preciopoducto, 2) as importe"),
+                            DB::raw("ROUND((vd.cantidad * vd.preciopoducto) - ((vd.cantidad * vd.preciopoducto) / 1.18), 2) as igv"),
+                            DB::raw("CASE 
+                                WHEN vd.preciopoducto IS NULL OR vd.preciocompraproducto IS NULL THEN 0
+                                ELSE ROUND((((vd.preciopoducto / 1.18) - vd.preciocompraproducto) * vd.cantidad), 2) 
+                            END as ganancia")
+                        )
+        ->get();
+
+        // Obtener los datos para el gráfico
+        $ventasPorFecha = DB::table('venta_detalle as vd')
+        ->join('ventas as v', 'vd.id_venta', '=', 'v.id')
+        ->where('v.estadoventa', '=', 1)
+        ->when(!empty($idproducto), function ($query) use ($idproducto) {
+            return $query->where('vd.id_producto', '=', $idproducto);
+        })
+        ->whereBetween('vd.created_at', [$fecha_inicio, $fecha_fin])
+        ->when($agrupacion == 'mes', function ($query) {
+            return $query->selectRaw('MONTH(vd.created_at) as grupo, COUNT(*) as numVentas, SUM(vd.cantidad * vd.preciopoducto) as montoTotal')
+                ->groupBy('grupo');
+        })
+        ->when($agrupacion == 'semana', function ($query) {
+            return $query->selectRaw('WEEK(vd.created_at) as grupo, COUNT(*) as numVentas, SUM(vd.cantidad * vd.preciopoducto) as montoTotal')
+                ->groupBy('grupo');
+        })
+        ->when($agrupacion == 'dia', function ($query) {
+            return $query->selectRaw('DAYOFWEEK(vd.created_at) as grupo, COUNT(*) as numVentas, SUM(vd.cantidad * vd.preciopoducto) as montoTotal')
+                ->groupBy('grupo');
+        })
+        ->when($agrupacion == 'anio', function ($query) {
+            return $query->selectRaw('YEAR(vd.created_at) as grupo, COUNT(*) as numVentas, SUM(vd.cantidad * vd.preciopoducto) as montoTotal')
+                ->groupBy('grupo');
+        })
+        ->get();
+
+        Log::info('Ventas por fecha:', $ventasPorFecha->toArray());
+            
+
+        // Preparar los datos para el gráfico
+        $meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic'];
+        $dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        $labels = [];
+        $numVentas = [];
+        $montosTotales = [];
+
+        foreach ($ventasPorFecha as $venta) {
+            switch ($agrupacion) {
+                case 'mes':
+                    $labels[] = $meses[$venta->grupo - 1];
+                    break;
+                case 'semana':
+                    $labels[] = 'Semana-' . $venta->grupo;
+                    break;
+                case 'dia':
+                    $labels[] = $dias[$venta->grupo - 1];
+                    break;
+                case 'anio':
+                    $labels[] = $venta->grupo;
+                    break;
+            }
+            $numVentas[] = $venta->numVentas;
+            $montosTotales[] = $venta->montoTotal;
+        }
+
+        // Formato final para el gráfico
+        $graficoData = [
+            'labels' => $labels,
+            'numVentas' => $numVentas,
+            'montosTotales' => $montosTotales,
+            'agrupacion' => $agrupacion,
+            'tipo_grafico' => $tipo_grafico
+        ];
+
+        // Decodifica el gráfico enviado como imagen base64 desde el frontend
+        $chart = $request->input('chart'); // Gráfico enviado desde el formulario
+        $chart = str_replace('data:image/png;base64,', '', $chart); // Limpia el prefijo
+        $chart = str_replace(' ', '+', $chart); // Reemplaza espacios en blanco
+        $chartImage = base64_decode($chart); // Decodifica la imagen
+
+        // Convierte la imagen a base64
+        $chartBase64 = base64_encode($chartImage);
+
+        // Renderiza la vista para el PDF
+        $pdf = Pdf::loadView('reportes.pdfReporteDinamico', [
+            'data' => $data,
+            'graficoData' => $graficoData,
+            'chart' => $chartBase64 // Pasa la imagen en base64
+        ]);
+
+
+        // Descarga el PDF generado
+        return $pdf->download('reporte-dinamico.pdf');
+    }
 
     public function reporteVentaDetallada(Request $request)
     {

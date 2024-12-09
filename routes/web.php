@@ -84,6 +84,8 @@ Route::get('/reporteVentaDetallada', [ReporteController::class,'reporteVentaDeta
 
 //pdf
 Route::post('/exportar-pdf', [ReporteController::class, 'exportarPDF'])->name('exportar.pdf');
+Route::post('/exportarDinamico-pdf', [ReporteController::class, 'exportarDinamicoPDF'])->name('exportarDinamico.pdf');
+
 
 //reporte producto
 Route::get('/reporteProducto', [ReporteController::class,'reporteProducto'])->name('reporte.producto');
