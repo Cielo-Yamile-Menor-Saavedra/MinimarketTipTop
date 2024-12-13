@@ -18,7 +18,10 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">LISTA DE VENTAS</h5>
-              <p class="card-text"></p>
+              <p class="card-text">
+                <a href="{{route('venta.create')}}" style="float: right" class="btn btn-primary">Nueva Venta </a> <br>
+              </p>
+
               <style>
                 .table-containerr {
                     overflow-x: auto;
@@ -239,11 +242,11 @@
             scrollX: true, // Activa el desplazamiento horizontal
             scroller: true, // Usa el plugin Scroller para manejar el desplazamiento en tablas grandes
             "language": {
-            "lengthMenu": "Mostrar MENU registros por página",
+            "lengthMenu": "Mostrar _MENU_ registros por página", // Asegúrate de usar _MENU_
             "zeroRecords": "Nada encontrado - disculpa",
-            "info": "Mostrando la página PAGE de PAGES",
+            "info": "Mostrando la página _PAGE_ de _PAGES_", // Usa _PAGE_ y _PAGES_ para interpolar correctamente
             "infoEmpty": "No hay registros disponibles",
-            "infoFiltered": "(filtrado de MAX registros totales)",
+            "infoFiltered": "(filtrado de _MAX_ registros totales)",
             "search": "Buscar:",
             "paginate":{
                 "next" : "Siguiente",
@@ -255,9 +258,11 @@
                 [0, "asc"]
             ],
             ajax: "{{ route('venta.index') }}",
-            columns: [{
-                    data: 'id',
-                    name: 'id'
+            columns: [
+                {
+                    data: 'id', // Campo de ID de venta
+                    name: 'id',
+                    visible: false // Opcional: Ocultar la columna ID si no es necesario mostrarla
                 },
                 {
                     data: 'boleta',
@@ -285,7 +290,7 @@
                     name: 'name',
                     'render': function(data, type, row) {
                         return @can('usuario.show') data.action3 +' '+ @endcan ''
-
+                            @can('usuario.edit') + data.action4 +' '+ @endcan ''
                             @can('usuario.destroy') +data.action2 @endcan;
                     }
                 }
@@ -360,9 +365,63 @@
                     "previous": "Anterior"
                 },
                 "emptyTable": "No hay detalles de venta",
-                "info": "Mostrando START a END de TOTAL productos",
+                "info": "Mostrando _START_ a _END_ de _TOTAL_ productos", // Usar los marcadores adecuados
                 "infoEmpty": "Mostrando 0 a 0 de 0 productos",
-                "lengthMenu": "Mostrar MENU productos"
+                "lengthMenu": "Mostrar _MENU_ productos"
+            }
+        });
+
+        // $('body').on('click', '.descargarVenta', function() {
+        //     // var Venta_id = $(this).data('id');
+        //     // window.location.href = "/venta/"+Venta_id;
+        //     var Venta_id = $(this).data('id');
+        //     // var url = "{{ route('venta.show', ':id') }}";
+        //     // url = url.replace(':id', Venta_id);
+        //     var url = "{{ route('venta.show', ':id') }}".replace(':id', Venta_id);
+        //     //window.location.href = url;
+        //     // Abrir la URL en una nueva ventana/pestaña
+        //     //window.open(url, '_blank');
+        //     // Usamos setTimeout para retrasar la apertura de la nueva ventana
+        //     setTimeout(function() {
+        //         var newWindow = window.open(url, '_blank');
+
+        //         // Verificar si la nueva ventana se abrió correctamente
+        //         if (newWindow) {
+        //             newWindow.focus();  // Da foco a la nueva ventana
+        //         } else {
+        //             alert("No se pudo abrir la nueva ventana. Verifique la configuración del navegador.");
+        //         }
+        //     }, 0);  // 0 milisegundos de retraso, solo para separar el proceso
+        // });
+
+        $('body').on('click', '.deleteVenta', function() {
+
+            var Venta_id_delete = $(this).data("id");
+            $confirm = confirm("¿Estás seguro de que quieres eliminarlo?");
+            if ($confirm == true) {
+                $.ajax({
+                    type: "DELETE",
+
+                    url: '{{ route('venta.destroy', ['ventum' => ':ventum']) }}'.replace(':ventum', Venta_id_delete),
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        table.draw();
+                        Toast.fire({
+                            type: 'success',
+                            title: String(data.success)
+                        });
+
+                    },
+                    error: function(data) {
+                        console.log('Error:', data);
+                        Toast.fire({
+                            type: 'error',
+                            title: 'Venta fallo al Eliminarlo.'
+                        })
+                    }
+                });
             }
         });
 

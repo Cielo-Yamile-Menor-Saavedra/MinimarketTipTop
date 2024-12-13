@@ -20,12 +20,6 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class VentaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-
-
     public function index(Request $request)
     {
         $ventas=Venta::all();
@@ -56,7 +50,9 @@ class VentaController extends Controller
                 //DB::raw("CONCAT(b.serie, '-', b.numero) as boleta"),
                 DB::raw("IFNULL(CONCAT(b.serie, '-', b.numero), 'NO GENERADO') as boleta"), // Muestra "NO GENERADO" si no hay boleta
                 DB::raw("SUM(d.cantidad) as total_cantidad")
+
              )
+
              ->groupBy('v.id', 'v.total_pagar','v.created_at', 'c.nombre_cliente', 'u.email', 'b.serie', 'b.numero') // Incluye todas las columnas seleccionadas
 
             ->get();
@@ -74,7 +70,21 @@ class VentaController extends Controller
 
                     return $btn;
                 })
-                ->rawColumns(['action2','action3'])
+                // ->addColumn('action4', function ($row) {
+                //     //$btn = '<a href="" data-toggle="tooltip"  data-id="' . $row->id . '" target="_blank" data-original-title="Descargar" class="btn btn-primary btn-sm descargarVenta"><i class="fas fa-download"></i></a>';
+                //     $btn = '<a href="' . route('venta.show', $row->id) . '" target="_blank" data-toggle="tooltip" data-original-title="Descargar" class="btn btn-primary btn-sm"><i class="fas fa-download"></i></a>';
+                //     return $btn;
+                // })
+                ->addColumn('action4', function ($row) {
+                    // Verifica si la boleta es "NO GENERADO"
+                    if ($row->boleta != 'NO GENERADO') {
+                        $btn = '<a href="' . route('venta.show', $row->id) . '" target="_blank" data-toggle="tooltip" data-original-title="Descargar" class="btn btn-primary btn-sm"><i class="fas fa-download"></i></a>';
+                        return $btn; // Retorna el botón solo si la boleta es "NO GENERADO"
+                    } else {
+                        return ''; // Retorna un string vacío si no es "NO GENERADO" para no mostrar el botón
+                    }
+                })
+                ->rawColumns(['action2','action3','action4'])
                 ->make(true);
             } catch (\Exception $e) {
                 return response()->json(['error' => $e->getMessage()]);
@@ -202,7 +212,8 @@ class VentaController extends Controller
             'numero' => $request->proximoNumeroBoleta, // Próximo número de boleta calculado
             'venta_id' => $venta->id,
             'monto'  => $request->total,
-            'pago'  => $request->pago
+            'pago'  => $request->pago,
+            //'estadoboleta' => 1
         ]);
 
         // Guardar los detalles de la venta
@@ -219,6 +230,7 @@ class VentaController extends Controller
                 $detalleVenta->id_producto = $producto->id; // Guardar el ID del producto en lugar del código
                 $detalleVenta->cantidad = $detalle['cantidad'];
                 $detalleVenta->preciopoducto = $detalle['precioVenta'];
+                $detalleVenta->preciocompraproducto = $producto->precio_compra; 
                 date_default_timezone_set('America/Lima');
                     $fecha_actual = date("Y-m-d H:i:s");
                 $detalleVenta->created_at = $fecha_actual;
@@ -379,6 +391,48 @@ class VentaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $venta = Venta::find($id);
+        $venta->estadoventa = 0;
+
+        $detalles = DetalleVenta::where('id_venta','=',$id)->get();
+        $boleta = Boleta::where('venta_id','=',$id)->first();
+
+        if ($boleta) {
+            $boleta->estadoboleta = 0;
+            $boleta->save();
+        }
+
+
+        // Guardar los detalles de la venta
+        foreach ($detalles as $detalle) {
+
+            // Buscar el producto por el código y obtener su ID
+            $producto = Producto::find($detalle->id_producto);
+
+            // Verificar si el producto existe
+            if ($producto) {
+
+
+                date_default_timezone_set('America/Lima');
+                    $fecha_actual = date("Y-m-d H:i:s");
+                $detalle->updated_at = $fecha_actual;
+
+                $detalle->save();
+
+                Producto::AumentarStockProducto($producto->id,$detalle->cantidad);
+
+            } else {
+                // Manejar el caso donde el producto no exista
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Producto con código ' . $detalle->codigo . ' no encontrado'
+                ], 404);
+            }
+        }
+
+
+        $venta->save();
+
+        return response()->json(['success' => 'Venta Eliminada Exitosamente.']);
     }
 }
