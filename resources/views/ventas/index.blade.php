@@ -21,7 +21,7 @@
               <p class="card-text">
                 <a href="{{route('venta.create')}}" style="float: right" class="btn btn-primary">Nueva Venta </a> <br>
               </p>
-                
+
               <style>
                 .table-containerr {
                     overflow-x: auto;
@@ -401,7 +401,7 @@
             if ($confirm == true) {
                 $.ajax({
                     type: "DELETE",
-                    
+
                     url: '{{ route('venta.destroy', ['ventum' => ':ventum']) }}'.replace(':ventum', Venta_id_delete),
                     data: {
                         _token: '{{ csrf_token() }}'

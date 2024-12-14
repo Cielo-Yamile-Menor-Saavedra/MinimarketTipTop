@@ -76,12 +76,12 @@
               @csrf<!-- crea un token de seguridad-->
               <button class="btn btn-warning" type="submit">
                 <i class="fa fa-power-off"></i> Salir</button>
-    
+
             </form>
           </div>
         </div>
-        
-        
+
+
 
       </li>
     </ul>
@@ -384,7 +384,7 @@
   </ul>
 </li>
 
-<li class="nav-item">
+  <li class="nav-item">
     <a href="https://prediccion-ventas.streamlit.app" target="_blank" class="nav-link">
         <i class="fa-solid fa-chart-simple"></i>
         <p>
@@ -392,6 +392,15 @@
         </p>
     </a>
   </li>
+
+{{--   <li class="nav-item">
+    <a href="{{route('prediccion.index')}}"  class="nav-link">
+        <i class="fa-solid fa-chart-simple"></i>
+        <p>
+            Predicción de ventas
+        </p>
+    </a>
+  </li> --}}
 
 
 

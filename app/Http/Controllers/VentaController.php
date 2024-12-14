@@ -213,7 +213,7 @@ class VentaController extends Controller
             'venta_id' => $venta->id,
             'monto'  => $request->total,
             'pago'  => $request->pago,
-            'estadoboleta' => 1
+            //'estadoboleta' => 1
         ]);
 
         // Guardar los detalles de la venta
@@ -230,7 +230,7 @@ class VentaController extends Controller
                 $detalleVenta->id_producto = $producto->id; // Guardar el ID del producto en lugar del código
                 $detalleVenta->cantidad = $detalle['cantidad'];
                 $detalleVenta->preciopoducto = $detalle['precioVenta'];
-                $detalleVenta->preciocompraproducto = $producto->precio_compra;
+                $detalleVenta->preciocompraproducto = $producto->precio_compra; 
                 date_default_timezone_set('America/Lima');
                     $fecha_actual = date("Y-m-d H:i:s");
                 $detalleVenta->created_at = $fecha_actual;
@@ -402,7 +402,7 @@ class VentaController extends Controller
             $boleta->save();
         }
 
-        
+
         // Guardar los detalles de la venta
         foreach ($detalles as $detalle) {
 
@@ -412,7 +412,7 @@ class VentaController extends Controller
             // Verificar si el producto existe
             if ($producto) {
 
-                
+
                 date_default_timezone_set('America/Lima');
                     $fecha_actual = date("Y-m-d H:i:s");
                 $detalle->updated_at = $fecha_actual;
