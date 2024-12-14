@@ -63,6 +63,10 @@
             <form id="exportPdfForm" action="{{ route('exportarDinamico.pdf') }}" method="POST">
                 @csrf
                 <input type="hidden" name="chart" id="chartInput">
+                <input type="" name="producto_id_dinamico" id="producto_id_dinamico" hidden>
+                <input type="date" name="fecha_inicio_dinamico" id="fecha_inicio_dinamico" hidden>
+                <input type="date" name="fecha_fin_dinamico" id="fecha_fin_dinamico" hidden >
+
                 <button type="submit" class="btn btn-danger">Exportar PDF</button>
             </form>
         </div>
@@ -926,6 +930,16 @@
 
         $('#fecha_inicio, #fecha_fin').change(function() {
             actualizarAgrupacion();
+            // Obtén los valores de los inputs
+            const input1Value = document.getElementById("fecha_inicio").value;
+            // Asigna el valor del primer input al segundo
+            document.getElementById("fecha_inicio_dinamico").value = input1Value;
+
+            const input2Value = document.getElementById("fecha_fin").value;
+            // Asigna el valor del primer input al segundo
+            document.getElementById("fecha_fin_dinamico").value = input2Value;
+
+            
         });
 
         actualizarAgrupacion();
@@ -934,6 +948,10 @@
         document.getElementById('exportPdfForm').addEventListener('submit', function (event) {
             // Previene el envío del formulario hasta obtener el gráfico
             event.preventDefault();
+            //para guardar el idproducto
+            const input3Value = document.getElementById("producto_id").value;
+            // Asigna el valor del primer input al segundo
+            document.getElementById("producto_id_dinamico").value = input3Value;
 
             // Selecciona el elemento del gráfico
             var chartCanvas = document.getElementById('graficoVentas');

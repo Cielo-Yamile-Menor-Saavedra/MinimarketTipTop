@@ -348,18 +348,18 @@ class ReporteController extends Controller
         //     # code...
         // }
         
-        $idproducto = $request->producto_id;
+        $idproducto = $request->producto_id_dinamico;
         $agrupacion = $request->input('agrupacion', 'mes');
         $tipo_grafico = $request->input('tipo_grafico', 'bar');
         $fechaActual = Carbon::now();
 
         // Inicializar fechas predeterminadas (un mes antes y hoy) si no se reciben en el request
-        $fecha_inicio = $request->fecha_inicio 
-            ? Carbon::createFromFormat('Y-m-d', $request->fecha_inicio)->startOfDay() 
+        $fecha_inicio = $request->fecha_inicio_dinamico 
+            ? Carbon::createFromFormat('Y-m-d', $request->fecha_inicio_dinamico)->startOfDay() 
             : $fechaActual->copy()->subMonth()->startOfDay();
 
-        $fecha_fin = $request->fecha_fin 
-            ? Carbon::createFromFormat('Y-m-d', $request->fecha_fin)->endOfDay() 
+        $fecha_fin = $request->fecha_fin_dinamico 
+            ? Carbon::createFromFormat('Y-m-d', $request->fecha_fin_dinamico)->endOfDay() 
             : $fechaActual->copy()->endOfDay();
         // Obtén los datos de la tabla
         $data = DB::table('venta_detalle as vd')

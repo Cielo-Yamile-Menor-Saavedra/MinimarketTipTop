@@ -111,12 +111,20 @@
         <div class="image">
           {{-- <i class="fa fa-user-circle" aria-hidden="true"></i> --}}
            {{-- <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"> --}}
-           <img id="image-inicial" name="image-inicial"
+           {{-- <img id="image-inicial" name="image-inicial"
             src="{{ auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('storage/avatares/placeholder.png') }}"
-            class="img-circle elevation-2" alt="User Image"/>
+            class="img-circle elevation-2" alt="User Image"/> --}}
+
+            <img id="image-inicial" name="image-inicial"
+            src="{{ auth()->check() && auth()->user()->avatar ? asset(auth()->user()->avatar) : asset('storage/avatares/placeholder.png') }}"
+            class="img-circle elevation-2" alt="User Image" />
         </div>
         <div class="info usuario">
-          <a href=""  class="d-block" style="text-decoration:none;">{{auth()->user()->name}}</a>
+          {{-- <a href=""  class="d-block" style="text-decoration:none;">{{auth()->user()->name}}</a> --}}
+          <a href="" class="d-block" style="text-decoration:none;">
+            {{ auth()->check() ? auth()->user()->name : 'Invitado' }}
+          </a>
+        
           <a class="d-block" style="text-decoration:none;"></a>
         </div>
       </div>

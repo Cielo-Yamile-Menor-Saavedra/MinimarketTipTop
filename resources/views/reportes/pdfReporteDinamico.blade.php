@@ -44,21 +44,27 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $producto)
-            <tr>
-                <td>{{ $producto->id }}</td>
-                <td>{{ $producto->fecha }}</td>
-                <td>{{ $producto->boleta }}</td>
-                <td>{{ $producto->cliente }}</td>
-                <td>{{ $producto->ruc_dni }}</td>
-                <td>{{ $producto->producto }}</td>
-                <td>{{ $producto->codigoproducto }}</td>
-                <td>{{ $producto->cantidad }}</td>
-                <td>{{ $producto->importe }}</td>
-                <td>{{ $producto->igv }}</td>
-                <td>{{ $producto->ganancia }}</td>
-            </tr>
-            @endforeach
+            @if(count($data)<=0)
+                <tr>
+                    <td colspan="11"><b>No hay registro</b></td>
+                </tr>
+            @else
+                @foreach($data as $producto)
+                <tr>
+                    <td>{{ $producto->id }}</td>
+                    <td>{{ $producto->fecha }}</td>
+                    <td>{{ $producto->boleta }}</td>
+                    <td>{{ $producto->cliente }}</td>
+                    <td>{{ $producto->ruc_dni }}</td>
+                    <td>{{ $producto->producto }}</td>
+                    <td>{{ $producto->codigoproducto }}</td>
+                    <td>{{ $producto->cantidad }}</td>
+                    <td>{{ $producto->importe }}</td>
+                    <td>{{ $producto->igv }}</td>
+                    <td>{{ $producto->ganancia }}</td>
+                </tr>
+                @endforeach
+            @endif
         </tbody>
     </table>
 

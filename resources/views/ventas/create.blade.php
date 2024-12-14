@@ -388,14 +388,14 @@
 
 
 
-<script>
+{{-- <script>
     //para cerrar el mensaje
     setTimeout(function () {
         //selecciono el id mensaje y lo remuevo en 2000 segundos
         document.querySelector('#mensaje').remove();
 
     }, 2000);
-</script>
+</script> --}}
 <script>
 
     $(document).ready(function() {
@@ -531,7 +531,7 @@
                     name: 'name',
                     'render': function(data2, type, row) {
                         //return @can('permiso.show') data2.action2 @endcan;
-                        @can('permiso.show')
+                        @can('permiso.index')
                             return data2.action2 ?? ''; // Mostrar acción si tiene permiso
                         @else
                             return ''; // Devolver vacío si no tiene permiso
